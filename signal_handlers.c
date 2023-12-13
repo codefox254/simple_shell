@@ -1,12 +1,21 @@
 #include "shell.h"
 
-/**
- * signal_handler - Handle signals
- * @signo: The signal number
- */
-void signal_handler(int signo)
+// Signal handler for Ctrl+C (SIGINT)
+void handle_sigint(int signo)
 {
-    /* Implementation of the signal_handler function */
-    /* Your implementation goes here */
+    if (signo == SIGINT)
+    {
+        write(STDOUT_FILENO, "\n#cisfun$ ", 10);
+    }
+}
+
+// Signal handler for Ctrl+Z (SIGTSTP)
+void handle_sigtstp(int signo)
+{
+    if (signo == SIGTSTP)
+    {
+        // Handle Ctrl+Z (suspend process)
+        write(STDOUT_FILENO, "\n#cisfun$ ", 10);
+    }
 }
 

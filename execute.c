@@ -1,35 +1,33 @@
-// execute.c
 #include "shell.h"
 
-/**
- * execute_command - Execute the given command
- * @command: The command to be executed
- */
-void execute_command(char *command)
+// Function to execute a command
+void execute_command(char *command, char *args[])
 {
-    pid_t pid;
+    pid_t pid, wpid;
     int status;
 
     pid = fork();
-
-    if (pid == -1)
-    {
-        perror("fork");
-        exit(EXIT_FAILURE);
-    }
-
     if (pid == 0)
     {
-        char *argv[] = {command, NULL};
-        if (execve(command, argv, NULL) == -1)
+        // Child process
+        if (execvp(command, args) == -1)
         {
-            perror("execve");
-            _exit(EXIT_FAILURE);
+            perror("Error executing command");
         }
+        exit(EXIT_FAILURE);
+    }
+    else if (pid < 0)
+    {
+        // Forking error
+        perror("Error forking process");
     }
     else
     {
-        waitpid(pid, &status, 0);
+        // Parent process
+        do
+        {
+            wpid = waitpid(pid, &status, WUNTRACED);
+        } while (!WIFEXITED(status) && !WIFSIGNALED(status));
     }
 }
 
