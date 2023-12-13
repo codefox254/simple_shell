@@ -1,10 +1,5 @@
 #include "shell.h"
 
-/**
- * main - Entry point for the shell program
- *
- * Return: Always 0 (Success)
- */
 int main(void)
 {
     char *command;
@@ -22,6 +17,6 @@ int main(void)
     }
 
     printf("\n");
-    return (0);
+    return 0;
 }
 

@@ -1,3 +1,4 @@
+// execute.c
 #include "shell.h"
 
 /**
@@ -19,9 +20,12 @@ void execute_command(char *command)
 
     if (pid == 0)
     {
-        execve(command, NULL, NULL);
-        perror("execve");
-        _exit(EXIT_FAILURE);
+        char *argv[] = {command, NULL};
+        if (execve(command, argv, NULL) == -1)
+        {
+            perror("execve");
+            _exit(EXIT_FAILURE);
+        }
     }
     else
     {
