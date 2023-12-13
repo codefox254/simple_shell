@@ -25,14 +25,13 @@ void handle_cd(char *args[])
 // Function to handle the "echo" built-in command
 void handle_echo(char *args[])
 {
-    for (int i = 1; args[i] != NULL; i++)
+    int i;
+    for (i = 1; args[i] != NULL; i++)
     {
         write(STDOUT_FILENO, args[i], strlen(args[i]));
         write(STDOUT_FILENO, " ", 1);
     }
     write(STDOUT_FILENO, "\n", 1);
-}
-
 // Function to handle the "exit" built-in command
 void handle_exit(char *args[])
 {

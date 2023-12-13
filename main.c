@@ -3,11 +3,13 @@
 int main(void)
 {
     char *input;
+    char *tokens[MAX_INPUT];
 
     while (1)
     {
         display_prompt();
         input = read_command();
+
         if (!input)
             break;
 
@@ -17,7 +19,6 @@ int main(void)
 
             if (input[0] != '\0')
             {
-                char *tokens[MAX_INPUT];
                 tokenize_string(input, tokens);
 
                 if (tokens[0] != NULL)
@@ -47,12 +48,11 @@ int main(void)
 
                     execute_command(tokens[0], tokens);
                 }
-
-                free_tokens(tokens);
             }
         }
 
         free(input);
+        free_tokens(tokens);
     }
 
     return 0;
