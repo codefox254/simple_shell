@@ -1,4 +1,5 @@
 #include "shell.h"
+#include <string.h>
 
 /**
  * execute_command - Execute the given command in a child process
@@ -21,15 +22,7 @@ int execute_command(char *command)
 
     if (child_pid == 0)
     {
-        // Child process
-
-        // Check for built-in commands
-        if (strcmp(command, "list") == 0)
-        {
-            list_files();
-            exit(EXIT_SUCCESS);
-        }
-
+        /* Child process */
         char **args = malloc(2 * sizeof(char *));
         if (args == NULL)
         {
@@ -40,6 +33,14 @@ int execute_command(char *command)
         args[0] = command;
         args[1] = NULL;
 
+        /* Check for built-in commands */
+        if (strcmp(command, "list") == 0)
+        {
+            list_files();
+            free(args); /* Free memory before exit */
+            exit(EXIT_SUCCESS);
+        }
+
         if (execve(command, args, NULL) == -1)
         {
             handle_error("Command not found");
@@ -47,11 +48,11 @@ int execute_command(char *command)
             exit(EXIT_FAILURE);
         }
 
-        free(args);
+        free(args); /* Free memory before exit */
     }
     else
     {
-        // Parent process
+        /* Parent process */
         waitpid(child_pid, &status, 0);
     }
 
@@ -75,7 +76,7 @@ void list_files(void)
 
     while ((entry = readdir(dir)) != NULL)
     {
-        if (entry->d_type == DT_REG) // Display regular files only
+        if (entry->d_type == DT_REG) /* Display regular files only */
         {
             printf("%s\n", entry->d_name);
         }
