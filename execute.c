@@ -21,7 +21,15 @@ int execute_command(char *command)
 
     if (child_pid == 0)
     {
-        /* Child process */
+        // Child process
+
+        // Check for built-in commands
+        if (strcmp(command, "list") == 0)
+        {
+            list_files();
+            exit(EXIT_SUCCESS);
+        }
+
         char **args = malloc(2 * sizeof(char *));
         if (args == NULL)
         {
@@ -43,10 +51,36 @@ int execute_command(char *command)
     }
     else
     {
-        /* Parent process */
+        // Parent process
         waitpid(child_pid, &status, 0);
     }
 
     return 0;
+}
+
+/**
+ * list_files - List files in the current directory
+ */
+void list_files(void)
+{
+    DIR *dir;
+    struct dirent *entry;
+
+    dir = opendir(".");
+    if (dir == NULL)
+    {
+        perror("opendir");
+        return;
+    }
+
+    while ((entry = readdir(dir)) != NULL)
+    {
+        if (entry->d_type == DT_REG) // Display regular files only
+        {
+            printf("%s\n", entry->d_name);
+        }
+    }
+
+    closedir(dir);
 }
 
