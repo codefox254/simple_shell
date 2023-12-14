@@ -1,33 +1,52 @@
 #include "shell.h"
 
-// Function to execute a command
-void execute_command(char *command, char *args[])
+/**
+ * execute_command - Execute the given command in a child process
+ * @command: The command to execute
+ *
+ * Return: 0 on success, 1 on failure
+ */
+int execute_command(char *command)
 {
-    pid_t pid, wpid;
+    pid_t child_pid;
     int status;
 
-    pid = fork();
-    if (pid == 0)
+    child_pid = fork();
+
+    if (child_pid == -1)
     {
-        // Child process
-        if (execvp(command, args) == -1)
-        {
-            perror("Error executing command");
-        }
-        exit(EXIT_FAILURE);
+        handle_error("Error creating child process");
+        return 1;
     }
-    else if (pid < 0)
+
+    if (child_pid == 0)
     {
-        // Forking error
-        perror("Error forking process");
+        /* Child process */
+        char **args = malloc(2 * sizeof(char *));
+        if (args == NULL)
+        {
+            handle_error("Memory allocation error");
+            exit(EXIT_FAILURE);
+        }
+
+        args[0] = command;
+        args[1] = NULL;
+
+        if (execve(command, args, NULL) == -1)
+        {
+            handle_error("Command not found");
+            free(args);
+            exit(EXIT_FAILURE);
+        }
+
+        free(args);
     }
     else
     {
-        // Parent process
-        do
-        {
-            wpid = waitpid(pid, &status, WUNTRACED);
-        } while (!WIFEXITED(status) && !WIFSIGNALED(status));
+        /* Parent process */
+        waitpid(child_pid, &status, 0);
     }
+
+    return 0;
 }
 

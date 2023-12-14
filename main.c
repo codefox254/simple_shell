@@ -1,58 +1,28 @@
 #include "shell.h"
 
+/**
+ * main - Entry point for the simple shell
+ *
+ * Return: Always 0
+ */
 int main(void)
 {
-    char *input;
-    char *tokens[MAX_INPUT];
+    char *command;
 
     while (1)
     {
         display_prompt();
-        input = read_command();
+        command = read_input();
 
-        if (!input)
-            break;
-
-        if (input[0] != '\0')
+        if (command == NULL)
         {
-            trim_whitespace(input);
-
-            if (input[0] != '\0')
-            {
-                tokenize_string(input, tokens);
-
-                if (tokens[0] != NULL)
-                {
-                    if (strcmp(tokens[0], "exit") == 0)
-                    {
-                        free(input);
-                        free_tokens(tokens);
-                        break;
-                    }
-
-                    handle_builtin(tokens[0], tokens);
-
-                    for (int i = 1; tokens[i] != NULL; i++)
-                    {
-                        if (strcmp(tokens[i], "<") == 0)
-                        {
-                            handle_input_redirection(tokens[0], tokens[i + 1]);
-                            tokens[i] = NULL;
-                        }
-                        else if (strcmp(tokens[i], ">") == 0)
-                        {
-                            handle_output_redirection(tokens[0], tokens[i + 1]);
-                            tokens[i] = NULL;
-                        }
-                    }
-
-                    execute_command(tokens[0], tokens);
-                }
-            }
+            handle_eof();
+            continue;
         }
 
-        free(input);
-        free_tokens(tokens);
+        execute_command(command);
+
+        free(command);  /* Free the allocated memory for the command */
     }
 
     return 0;

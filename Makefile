@@ -1,17 +1,19 @@
 CC = gcc
 CFLAGS = -Wall -Werror -Wextra -pedantic -std=gnu89
-SRC = main.c executor.c prompt.c utils.c cd.c builtins.c signals.c file_operators.c string_handlers.c env_handlers.c execute.c
+SRC = main.c execute.c helpers.c error_handling.c
 OBJ = $(SRC:.c=.o)
-EXECUTABLE = my_shell
+EXEC = simple_shell
 
-all: $(EXECUTABLE)
+all: $(EXEC)
 
-$(EXECUTABLE): $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) -o $@
-
-%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+$(EXEC): $(OBJ)
+	$(CC) $(CFLAGS) -o $@ $(OBJ)
 
 clean:
-	rm -f $(OBJ) $(EXECUTABLE)
+	rm -f $(OBJ)
+
+fclean: clean
+	rm -f $(EXEC)
+
+re: fclean all
 
