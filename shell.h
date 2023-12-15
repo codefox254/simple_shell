@@ -3,17 +3,19 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
-#include <sys/types.h>
 #include <sys/wait.h>
-#include <dirent.h> /* For directory listing */
+#include <sys/types.h>
+#include <errno.h>
 
-void display_prompt(void);
-char *read_input(void);
-int execute_command(char *command);
-void handle_error(char *message);
+#define MAX_INPUT 1024
+#define MAX_ARGS 64
+
 void handle_eof(void);
-void list_files(void);
+void change_directory(const char *path);
+void parse_input(const char *input, char **command, char **args);
+void execute_command(char *command, char **args);
 
 #endif /* SHELL_H */
 

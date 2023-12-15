@@ -1,28 +1,52 @@
 #include "shell.h"
 
-/**
- * display_prompt - Display the shell prompt
- */
-void display_prompt(void)
-{
-    printf("$ ");  /* Simple prompt */
-}
+void parse_input(const char *line, char **command, char **args) {
+    /* Initialize variables */
+    int i = 0;
+    char *token;
+    char *mutable_line = strdup(line);
 
-/**
- * read_input - Read user input from the command line
- *
- * Return: The entered command or NULL on end-of-file
- */
-char *read_input(void)
-{
-    char *input = NULL;
-    size_t bufsize = 0;
+    /* Tokenize the line into command and arguments */
+    *command = strtok(mutable_line, " \t\n");
+    args[i++] = *command;
 
-    if (getline(&input, &bufsize, stdin) == -1)
-    {
-        return NULL;  /* Return NULL on end-of-file condition */
+    /* Tokenize the remaining string into arguments */
+    while ((token = strtok(NULL, " \t\n")) != NULL) {
+        args[i++] = token;
     }
 
-    return input;
+    /* Set the last argument to NULL to indicate the end of the argument list */
+    args[i] = NULL;
+
+    free(mutable_line);
+}
+
+void execute_command(char *command, char **args) {
+    pid_t pid;
+    int status;
+
+    if ((pid = fork()) == 0) {
+        /* Child process */
+        if (execvp(command, args) == -1) {
+            perror("hsh");
+            exit(EXIT_FAILURE);
+        }
+    } else if (pid < 0) {
+        /* Fork error */
+        perror("hsh");
+        exit(EXIT_FAILURE);
+    } else {
+        /* Parent process */
+        waitpid(pid, &status, WUNTRACED);
+        /* Note: wpid is not used, and we can directly wait for the child process */
+    }
+}
+
+void change_directory(const char *path) {
+    /* Change the current working directory using chdir */
+    if (chdir(path) != 0) {
+        perror("hsh");
+        exit(EXIT_FAILURE);
+    }
 }
 

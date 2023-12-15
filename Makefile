@@ -1,19 +1,17 @@
 CC = gcc
 CFLAGS = -Wall -Werror -Wextra -pedantic -std=gnu89
-SRC = main.c execute.c helpers.c error_handling.c
-OBJ = $(SRC:.c=.o)
-EXEC = simple_shell
+SOURCES = error_handling.c execute.c helpers.c main.c shell.c
+OBJECTS = $(SOURCES:.c=.o)
+EXECUTABLE = hsh
 
-all: $(EXEC)
+all: $(EXECUTABLE)
 
-$(EXEC): $(OBJ)
-	$(CC) $(CFLAGS) -o $@ $(OBJ)
+$(EXECUTABLE): $(OBJECTS)
+    $(CC) $(CFLAGS) $^ -o $@
+
+%.o: %.c
+    $(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJ)
-
-fclean: clean
-	rm -f $(EXEC)
-
-re: fclean all
+    rm -f $(OBJECTS) $(EXECUTABLE)
 
