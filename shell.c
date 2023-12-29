@@ -1,5 +1,4 @@
 #include "shell.h"
-#include <unistd.h>
 
 extern char **environ;
 
@@ -27,7 +26,7 @@ int main(void) {
     char **args;
 
     while (1) {
-        display_prompt();
+        display_prompt("($) "); /* Pass a string literal as an argument */
         input = read_input();
         args = parse_input(input);
 
@@ -44,7 +43,5 @@ int main(void) {
         free(input);
         free(args);
     }
-
-    return 0;
 }
 

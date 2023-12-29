@@ -1,5 +1,4 @@
-#ifndef SHELL_H
-#define SHELL_H
+#pragma once /* Use #pragma once instead of #ifndef and #endif */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -21,21 +20,19 @@
  * @execute_command: Function pointer to execute a command.
  */
 typedef struct Shell {
-    void (*prompt)();
+    void (*prompt)(const char *prompt); /* Use const char * for prompt */
     char *(*read_input)();
-    char **(*parse_input)(char *input);
+    char **(*parse_input)(const char *input);
     void (*execute_command)(char **args);
-    void (*exit_shell)();
-    void (*env_shell)();
+    void (*exit_shell)(void); /* Use void as the parameter list */
+    void (*env_shell)(void); /* Use void as the parameter list */
 } Shell;
 
 /* Function declarations */
-void display_prompt();
+void display_prompt(const char *prompt); /* Use const char * for prompt */
 char *read_input();
-char **parse_input(char *input);
+char **parse_input(const char *input);
 void execute_command(char **args);
-void exit_shell();
-void env_shell();
-
-#endif /* SHELL_H */
+void exit_shell(void); /* Use void as the parameter list */
+void env_shell(void); /* Use void as the parameter list */
 
