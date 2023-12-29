@@ -1,17 +1,15 @@
 CC = gcc
 CFLAGS = -Wall -Werror -Wextra -pedantic -std=gnu89
-SOURCES = error_handling.c execute.c helpers.c main.c shell.c
-OBJECTS = $(SOURCES:.c=.o)
-EXECUTABLE = hsh
+SRCS = shell.c parser.c executor.c utils.c
+OBJS = $(SRCS:.c=.o)
+TARGET = hsh
 
-all: $(EXECUTABLE)
-
-$(EXECUTABLE): $(OBJECTS)
-    $(CC) $(CFLAGS) $^ -o $@
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -o $(TARGET)
 
 %.o: %.c
-    $(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $<
 
 clean:
-    rm -f $(OBJECTS) $(EXECUTABLE)
+	rm -f $(OBJS) $(TARGET)
 
